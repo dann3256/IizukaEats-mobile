@@ -1,0 +1,100 @@
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+
+        name:
+          type: string
+
+        email:
+          type: string
+          format: email
+
+        password_hash:
+          type: string
+
+        created_at:
+          type: string
+          format: date-time
+
+        updated_at:
+          type: string
+          format: date-time
+
+      required:
+        - id
+        - name
+        - email
+        - password_hash
+        - created_at
+        - updated_at
+
+    # --- 400 Error Schema ---
+    ValidationError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Bad Request"
+        message:
+          type: string
+          example: "Input validation failed."
+
+    # --- 401 Error Schema ---
+    UnauthorizedError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Unauthorized"
+        message:
+          type: string
+          example: "Authentication token is missing or invalid."
+
+    # --- 403 Error Schema ---
+    ForbiddenError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Forbidden"
+        message:
+          type: string
+          example: "You do not have permission to access this resource."
+
+    # --- 404 Error Schema ---
+    NotFoundError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Not Found"
+        message:
+          type: string
+          example: "The requested user profile was not found."
+
+    # --- 409 Error Schema ---
+    ConflictError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Conflict"
+        message:
+          type: string
+          example: "An account with this email address already exists."
+
+    # --- 500 Error Schema ---
+    InternalServerError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Internal Server Error"
+        message:
+          type: string
+          example: "An unexpected error occurred. Please try again later."

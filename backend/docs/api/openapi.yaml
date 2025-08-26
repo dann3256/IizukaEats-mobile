@@ -1,0 +1,75 @@
+openapi: 3.0.3
+info:
+  title: User Authentication API
+  description: JWT-based user authentication and registration API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Development server
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+paths:
+  /register:
+    post:
+      summary: Register a new user
+      description: Create a new user account
+      operationId: register
+      tags:
+        - Authentication
+      requestBody:
+        $ref: "./components/requestBodies.yaml#/components/requestBodies/RegisterRequest"
+      responses:
+        "201":
+          description: User registered successfully
+        "400":
+          $ref: "./components/errors.yaml#/components/responses/ValidationError"
+        "409":
+          $ref: "./components/errors.yaml#/components/responses/ConflictError"
+        "500":
+          $ref: "./components/errors.yaml#/components/responses/InternalServerError"
+
+  /login:
+    post:
+      summary: Login user
+      description: Authenticate user and return JWT token
+      operationId: login
+      tags:
+        - Authentication
+      requestBody:
+        $ref: "./components/requestBodies.yaml#/components/requestBodies/LoginRequest"
+      responses:
+        "200":
+          $ref: "./components/responseBodies.yaml#/components/responses/LoginResponse"
+        "400":
+          $ref: "./components/errors.yaml#/components/responses/ValidationError"
+        "401":
+          $ref: "./components/errors.yaml#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "./components/errors.yaml#/components/responses/ForbiddenError"
+        "500":
+          $ref: "./components/errors.yaml#/components/responses/InternalServerError"
+
+  /me:
+    get:
+      summary: Get  user profile
+      description: Get the profile of the currently authenticated user
+      operationId: get User
+      tags:
+        - User
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          $ref: "./components/responseBodies.yaml#/components/responses/UserResponse"
+        "401":
+          $ref: "./components/errors.yaml#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "./components/errors.yaml#/components/responses/ForbiddenError"
+        "500":
+          $ref: "./components/errors.yaml#/components/responses/InternalServerError"

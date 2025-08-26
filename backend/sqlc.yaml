@@ -1,0 +1,27 @@
+version: "2"
+sql:
+  - engine: postgresql
+    schema:
+      - db/maigrations/
+    queries:
+      - internal/infrastructure/db/queries/
+    gen:
+      go:
+        package: sqlc
+        out: internal/infrastructure/db/sqlc
+        
+        sql_package: pgx/v5
+
+        overrides:
+          - db_type: date
+            go_type:
+              import: time
+              type: Time
+          - db_type: timestamptz
+            go_type:
+              import: time
+              type: Time
+          - db_type: pg_catalog.time
+            go_type:
+              import: time
+              type: Time

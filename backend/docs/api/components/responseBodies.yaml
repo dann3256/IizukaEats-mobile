@@ -1,0 +1,29 @@
+components:
+  responses:
+    LoginResponse:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              accessToken:
+                type: string
+                description: APIリクエストの際に使用するJWTアクセストークン。有効期限は短い。
+                example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM..."
+              refreshToken:
+                type: string
+                description: アクセストークンの有効期限が切れた際に、新しいトークンを再発行するために使用するトークン。有効期限は長い。
+                example: "def50200f29182f7ac2b76137d30b8f0a9a4b441..."
+
+    UserResponse:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                $ref: "./schemas.yaml#/components/schemas/User/properties/name"
+              email:
+                $ref: "./schemas.yaml#/components/schemas/User/properties/email"
+              password_hash:
+                $ref: "./schemas.yaml#/components/schemas/User/properties/password_hash"
