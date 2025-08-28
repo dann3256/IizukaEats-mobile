@@ -112,7 +112,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					// Leaf node.
 					switch r.Method {
 					case "POST":
-						s.handleRegisterRequest([0]string{}, elemIsEscaped, w, r)
+						s.handleRegisterUserRequest([0]string{}, elemIsEscaped, w, r)
 					default:
 						s.notAllowed(w, r, "POST")
 					}
@@ -274,9 +274,9 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					// Leaf node.
 					switch method {
 					case "POST":
-						r.name = RegisterOperation
+						r.name = RegisterUserOperation
 						r.summary = "Register a new user"
-						r.operationID = "register"
+						r.operationID = "RegisterUser"
 						r.pathPattern = "/register"
 						r.args = args
 						r.count = 0

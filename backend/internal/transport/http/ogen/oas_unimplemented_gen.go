@@ -31,11 +31,11 @@ func (UnimplementedHandler) Login(ctx context.Context, req OptLoginReq) (r Login
 	return r, ht.ErrNotImplemented
 }
 
-// Register implements register operation.
+// RegisterUser implements RegisterUser operation.
 //
 // Create a new user account.
 //
 // POST /register
-func (UnimplementedHandler) Register(ctx context.Context, req OptRegisterReq) (r RegisterRes, _ error) {
+func (UnimplementedHandler) RegisterUser(ctx context.Context, req OptRegisterUserReq) (r RegisterUserRes, _ error) {
 	return r, ht.ErrNotImplemented
 }

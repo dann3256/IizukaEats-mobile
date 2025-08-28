@@ -1,4 +1,4 @@
-.PYHONY: install sqlc openapi
+.PYHONY: install sqlc openapi 
 
 install:
 	@bash scripts/install-tools.sh

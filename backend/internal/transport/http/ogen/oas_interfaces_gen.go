@@ -9,6 +9,6 @@ type LoginRes interface {
 	loginRes()
 }
 
-type RegisterRes interface {
-	registerRes()
+type RegisterUserRes interface {
+	registerUserRes()
 }

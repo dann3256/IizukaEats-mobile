@@ -53,7 +53,7 @@ func (s *ConflictError) SetMessage(val OptString) {
 	s.Message = val
 }
 
-func (*ConflictError) registerRes() {}
+func (*ConflictError) registerUserRes() {}
 
 type Email string
 
@@ -112,9 +112,9 @@ func (s *InternalServerError) SetMessage(val OptString) {
 	s.Message = val
 }
 
-func (*InternalServerError) getUserRes()  {}
-func (*InternalServerError) loginRes()    {}
-func (*InternalServerError) registerRes() {}
+func (*InternalServerError) getUserRes()      {}
+func (*InternalServerError) loginRes()        {}
+func (*InternalServerError) registerUserRes() {}
 
 type LoginReq struct {
 	Name         OptName         `json:"name"`
@@ -367,38 +367,38 @@ func (o OptPasswordHash) Or(d PasswordHash) PasswordHash {
 	return d
 }
 
-// NewOptRegisterReq returns new OptRegisterReq with value set to v.
-func NewOptRegisterReq(v RegisterReq) OptRegisterReq {
-	return OptRegisterReq{
+// NewOptRegisterUserReq returns new OptRegisterUserReq with value set to v.
+func NewOptRegisterUserReq(v RegisterUserReq) OptRegisterUserReq {
+	return OptRegisterUserReq{
 		Value: v,
 		Set:   true,
 	}
 }
 
-// OptRegisterReq is optional RegisterReq.
-type OptRegisterReq struct {
-	Value RegisterReq
+// OptRegisterUserReq is optional RegisterUserReq.
+type OptRegisterUserReq struct {
+	Value RegisterUserReq
 	Set   bool
 }
 
-// IsSet returns true if OptRegisterReq was set.
-func (o OptRegisterReq) IsSet() bool { return o.Set }
+// IsSet returns true if OptRegisterUserReq was set.
+func (o OptRegisterUserReq) IsSet() bool { return o.Set }
 
 // Reset unsets value.
-func (o *OptRegisterReq) Reset() {
-	var v RegisterReq
+func (o *OptRegisterUserReq) Reset() {
+	var v RegisterUserReq
 	o.Value = v
 	o.Set = false
 }
 
 // SetTo sets value to v.
-func (o *OptRegisterReq) SetTo(v RegisterReq) {
+func (o *OptRegisterUserReq) SetTo(v RegisterUserReq) {
 	o.Set = true
 	o.Value = v
 }
 
 // Get returns value and boolean that denotes whether value was set.
-func (o OptRegisterReq) Get() (v RegisterReq, ok bool) {
+func (o OptRegisterUserReq) Get() (v RegisterUserReq, ok bool) {
 	if !o.Set {
 		return v, false
 	}
@@ -406,7 +406,7 @@ func (o OptRegisterReq) Get() (v RegisterReq, ok bool) {
 }
 
 // Or returns value if set, or given parameter if does not.
-func (o OptRegisterReq) Or(d RegisterReq) RegisterReq {
+func (o OptRegisterUserReq) Or(d RegisterUserReq) RegisterUserReq {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -461,44 +461,39 @@ func (o OptString) Or(d string) string {
 
 type PasswordHash string
 
-// RegisterCreated is response for Register operation.
-type RegisterCreated struct{}
-
-func (*RegisterCreated) registerRes() {}
-
-type RegisterReq struct {
+type RegisterUserReq struct {
 	Name         OptName         `json:"name"`
 	Email        OptEmail        `json:"email"`
 	PasswordHash OptPasswordHash `json:"password_hash"`
 }
 
 // GetName returns the value of Name.
-func (s *RegisterReq) GetName() OptName {
+func (s *RegisterUserReq) GetName() OptName {
 	return s.Name
 }
 
 // GetEmail returns the value of Email.
-func (s *RegisterReq) GetEmail() OptEmail {
+func (s *RegisterUserReq) GetEmail() OptEmail {
 	return s.Email
 }
 
 // GetPasswordHash returns the value of PasswordHash.
-func (s *RegisterReq) GetPasswordHash() OptPasswordHash {
+func (s *RegisterUserReq) GetPasswordHash() OptPasswordHash {
 	return s.PasswordHash
 }
 
 // SetName sets the value of Name.
-func (s *RegisterReq) SetName(val OptName) {
+func (s *RegisterUserReq) SetName(val OptName) {
 	s.Name = val
 }
 
 // SetEmail sets the value of Email.
-func (s *RegisterReq) SetEmail(val OptEmail) {
+func (s *RegisterUserReq) SetEmail(val OptEmail) {
 	s.Email = val
 }
 
 // SetPasswordHash sets the value of PasswordHash.
-func (s *RegisterReq) SetPasswordHash(val OptPasswordHash) {
+func (s *RegisterUserReq) SetPasswordHash(val OptPasswordHash) {
 	s.PasswordHash = val
 }
 
@@ -567,7 +562,8 @@ func (s *UserResponse) SetPasswordHash(val OptPasswordHash) {
 	s.PasswordHash = val
 }
 
-func (*UserResponse) getUserRes() {}
+func (*UserResponse) getUserRes()      {}
+func (*UserResponse) registerUserRes() {}
 
 // Ref: #/components/schemas/ValidationError
 type ValidationError struct {
@@ -595,5 +591,5 @@ func (s *ValidationError) SetMessage(val OptString) {
 	s.Message = val
 }
 
-func (*ValidationError) loginRes()    {}
-func (*ValidationError) registerRes() {}
+func (*ValidationError) loginRes()        {}
+func (*ValidationError) registerUserRes() {}

@@ -40,12 +40,12 @@ type Invoker interface {
 	//
 	// POST /login
 	Login(ctx context.Context, request OptLoginReq) (LoginRes, error)
-	// Register invokes register operation.
+	// RegisterUser invokes RegisterUser operation.
 	//
 	// Create a new user account.
 	//
 	// POST /register
-	Register(ctx context.Context, request OptRegisterReq) (RegisterRes, error)
+	RegisterUser(ctx context.Context, request OptRegisterUserReq) (RegisterUserRes, error)
 }
 
 // Client implements OAS client.
@@ -273,19 +273,19 @@ func (c *Client) sendLogin(ctx context.Context, request OptLoginReq) (res LoginR
 	return result, nil
 }
 
-// Register invokes register operation.
+// RegisterUser invokes RegisterUser operation.
 //
 // Create a new user account.
 //
 // POST /register
-func (c *Client) Register(ctx context.Context, request OptRegisterReq) (RegisterRes, error) {
-	res, err := c.sendRegister(ctx, request)
+func (c *Client) RegisterUser(ctx context.Context, request OptRegisterUserReq) (RegisterUserRes, error) {
+	res, err := c.sendRegisterUser(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendRegister(ctx context.Context, request OptRegisterReq) (res RegisterRes, err error) {
+func (c *Client) sendRegisterUser(ctx context.Context, request OptRegisterUserReq) (res RegisterUserRes, err error) {
 	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("register"),
+		otelogen.OperationID("RegisterUser"),
 		semconv.HTTPRequestMethodKey.String("POST"),
 		semconv.HTTPRouteKey.String("/register"),
 	}
@@ -302,7 +302,7 @@ func (c *Client) sendRegister(ctx context.Context, request OptRegisterReq) (res 
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, RegisterOperation,
+	ctx, span := c.cfg.Tracer.Start(ctx, RegisterUserOperation,
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -328,7 +328,7 @@ func (c *Client) sendRegister(ctx context.Context, request OptRegisterReq) (res 
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
 	}
-	if err := encodeRegisterRequest(request, r); err != nil {
+	if err := encodeRegisterUserRequest(request, r); err != nil {
 		return res, errors.Wrap(err, "encode request")
 	}
 
@@ -340,7 +340,7 @@ func (c *Client) sendRegister(ctx context.Context, request OptRegisterReq) (res 
 	defer resp.Body.Close()
 
 	stage = "DecodeResponse"
-	result, err := decodeRegisterResponse(resp)
+	result, err := decodeRegisterUserResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

@@ -1,10 +1,8 @@
 version: "2"
 sql:
   - engine: postgresql
-    schema:
-      - db/maigrations/
-    queries:
-      - internal/infrastructure/db/queries/
+    schema: "db/maigrations/"
+    queries: "internal/infrastructure/db/queries/"
     gen:
       go:
         package: sqlc

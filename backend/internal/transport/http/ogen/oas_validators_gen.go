@@ -54,7 +54,7 @@ func (s *LoginReq) Validate() error {
 	return nil
 }
 
-func (s *RegisterReq) Validate() error {
+func (s *RegisterUserReq) Validate() error {
 	if s == nil {
 		return validate.ErrNilPointer
 	}

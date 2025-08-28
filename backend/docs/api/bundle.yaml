@@ -11,14 +11,14 @@ paths:
     post:
       summary: Register a new user
       description: Create a new user account
-      operationId: register
+      operationId: RegisterUser
       tags:
         - Authentication
       requestBody:
         $ref: '#/components/requestBodies/RegisterRequest'
       responses:
         '201':
-          description: User registered successfully
+          $ref: '#/components/responses/UserResponse'
         '400':
           $ref: '#/components/responses/ValidationError'
         '409':
@@ -148,6 +148,18 @@ components:
               password_hash:
                 $ref: '#/components/schemas/password_hash'
   responses:
+    UserResponse:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                $ref: '#/components/schemas/name'
+              email:
+                $ref: '#/components/schemas/email'
+              password_hash:
+                $ref: '#/components/schemas/password_hash'
     ValidationError:
       description: Bad Request. The server cannot or will not process the request due to something that is perceived to be a client error (e.g., malformed request syntax, invalid request message framing, or deceptive request routing).
       content:
@@ -192,15 +204,3 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ForbiddenError'
-    UserResponse:
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              name:
-                $ref: '#/components/schemas/name'
-              email:
-                $ref: '#/components/schemas/email'
-              password_hash:
-                $ref: '#/components/schemas/password_hash'

@@ -96,8 +96,8 @@ func (s *Server) decodeLoginRequest(r *http.Request) (
 	}
 }
 
-func (s *Server) decodeRegisterRequest(r *http.Request) (
-	req OptRegisterReq,
+func (s *Server) decodeRegisterUserRequest(r *http.Request) (
+	req OptRegisterUserReq,
 	close func() error,
 	rerr error,
 ) {
@@ -139,7 +139,7 @@ func (s *Server) decodeRegisterRequest(r *http.Request) (
 
 		d := jx.DecodeBytes(buf)
 
-		var request OptRegisterReq
+		var request OptRegisterUserReq
 		if err := func() error {
 			request.Reset()
 			if err := request.Decode(d); err != nil {

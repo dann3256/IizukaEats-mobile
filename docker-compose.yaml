@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  # Goアプリケーションのサービス
+  backend:
+    build:
+      context: . # docker-compose.yaml があるディレクトリをビルドのコンテキストにする
+      dockerfile: Dockerfile # 使用するDockerfileを指定
+    ports:
+      - "8080:8080" # ホストの8080番ポートをコンテナの8080番ポートにマッピング
+    environment:
+      # dbという名前のホストで動いているPostgreSQLサーバーの5432番ポートに接続し、userというユーザー名とpasswordというパスワードを使ってiizukaeats_dbデータベースに、暗号化なしでログインしてください
+      - DB_SOURCE=postgresql://user:password@db:5432/iizukaeats_db?sslmode=disable
+    depends_on:
+      - db # dbサービスが起動してからbackendサービスを起動する
+
+  # データベースのサービス (PostgreSQLを例)
+  db:
+    image: postgres:15-alpine # PostgreSQLの公式イメージを使用
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=iizukaeats_db
+    ports:
+      - "5432:5432" # ホストから直接DBに接続したい場合（開発時に便利）
+    volumes:
+      - db-data:/var/lib/postgresql/data # DBのデータを永続化するためのボリューム
+
+volumes:
+  db-data: # データの永続化に使用する名前付きボリュームを定義

@@ -636,18 +636,18 @@ func (s *OptPasswordHash) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
-// Encode encodes RegisterReq as json.
-func (o OptRegisterReq) Encode(e *jx.Encoder) {
+// Encode encodes RegisterUserReq as json.
+func (o OptRegisterUserReq) Encode(e *jx.Encoder) {
 	if !o.Set {
 		return
 	}
 	o.Value.Encode(e)
 }
 
-// Decode decodes RegisterReq from json.
-func (o *OptRegisterReq) Decode(d *jx.Decoder) error {
+// Decode decodes RegisterUserReq from json.
+func (o *OptRegisterUserReq) Decode(d *jx.Decoder) error {
 	if o == nil {
-		return errors.New("invalid: unable to decode OptRegisterReq to nil")
+		return errors.New("invalid: unable to decode OptRegisterUserReq to nil")
 	}
 	o.Set = true
 	if err := o.Value.Decode(d); err != nil {
@@ -657,14 +657,14 @@ func (o *OptRegisterReq) Decode(d *jx.Decoder) error {
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s OptRegisterReq) MarshalJSON() ([]byte, error) {
+func (s OptRegisterUserReq) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptRegisterReq) UnmarshalJSON(data []byte) error {
+func (s *OptRegisterUserReq) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -745,14 +745,14 @@ func (s *PasswordHash) UnmarshalJSON(data []byte) error {
 }
 
 // Encode implements json.Marshaler.
-func (s *RegisterReq) Encode(e *jx.Encoder) {
+func (s *RegisterUserReq) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
 	e.ObjEnd()
 }
 
 // encodeFields encodes fields.
-func (s *RegisterReq) encodeFields(e *jx.Encoder) {
+func (s *RegisterUserReq) encodeFields(e *jx.Encoder) {
 	{
 		if s.Name.Set {
 			e.FieldStart("name")
@@ -773,16 +773,16 @@ func (s *RegisterReq) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfRegisterReq = [3]string{
+var jsonFieldsNameOfRegisterUserReq = [3]string{
 	0: "name",
 	1: "email",
 	2: "password_hash",
 }
 
-// Decode decodes RegisterReq from json.
-func (s *RegisterReq) Decode(d *jx.Decoder) error {
+// Decode decodes RegisterUserReq from json.
+func (s *RegisterUserReq) Decode(d *jx.Decoder) error {
 	if s == nil {
-		return errors.New("invalid: unable to decode RegisterReq to nil")
+		return errors.New("invalid: unable to decode RegisterUserReq to nil")
 	}
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
@@ -822,21 +822,21 @@ func (s *RegisterReq) Decode(d *jx.Decoder) error {
 		}
 		return nil
 	}); err != nil {
-		return errors.Wrap(err, "decode RegisterReq")
+		return errors.Wrap(err, "decode RegisterUserReq")
 	}
 
 	return nil
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s *RegisterReq) MarshalJSON() ([]byte, error) {
+func (s *RegisterUserReq) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *RegisterReq) UnmarshalJSON(data []byte) error {
+func (s *RegisterUserReq) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }

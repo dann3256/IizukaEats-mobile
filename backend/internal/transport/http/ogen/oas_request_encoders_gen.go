@@ -31,8 +31,8 @@ func encodeLoginRequest(
 	return nil
 }
 
-func encodeRegisterRequest(
-	req OptRegisterReq,
+func encodeRegisterUserRequest(
+	req OptRegisterUserReq,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"

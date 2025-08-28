@@ -19,15 +19,16 @@ paths:
     post:
       summary: Register a new user
       description: Create a new user account
-      operationId: register
+      operationId: RegisterUser
       tags:
         - Authentication
       requestBody:
-        $ref: "./components/requestBodies.yaml#/components/requestBodies/RegisterRequest"
+          $ref: "./components/requestBodies.yaml#/components/requestBodies/RegisterRequest"
+        
       responses:
         "201":
-          description: User registered successfully
-        "400":
+          $ref: "./components/responseBodies.yaml#/components/responses/UserResponse"
+        "400": 
           $ref: "./components/errors.yaml#/components/responses/ValidationError"
         "409":
           $ref: "./components/errors.yaml#/components/responses/ConflictError"

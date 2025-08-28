@@ -335,22 +335,22 @@ func (s *Server) handleLoginRequest(args [0]string, argsEscaped bool, w http.Res
 	}
 }
 
-// handleRegisterRequest handles register operation.
+// handleRegisterUserRequest handles RegisterUser operation.
 //
 // Create a new user account.
 //
 // POST /register
-func (s *Server) handleRegisterRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+func (s *Server) handleRegisterUserRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("register"),
+		otelogen.OperationID("RegisterUser"),
 		semconv.HTTPRequestMethodKey.String("POST"),
 		semconv.HTTPRouteKey.String("/register"),
 	}
 
 	// Start a span for this request.
-	ctx, span := s.cfg.Tracer.Start(r.Context(), RegisterOperation,
+	ctx, span := s.cfg.Tracer.Start(r.Context(), RegisterUserOperation,
 		trace.WithAttributes(otelAttrs...),
 		serverSpanKind,
 	)
@@ -405,11 +405,11 @@ func (s *Server) handleRegisterRequest(args [0]string, argsEscaped bool, w http.
 		}
 		err          error
 		opErrContext = ogenerrors.OperationContext{
-			Name: RegisterOperation,
-			ID:   "register",
+			Name: RegisterUserOperation,
+			ID:   "RegisterUser",
 		}
 	)
-	request, close, err := s.decodeRegisterRequest(r)
+	request, close, err := s.decodeRegisterUserRequest(r)
 	if err != nil {
 		err = &ogenerrors.DecodeRequestError{
 			OperationContext: opErrContext,
@@ -425,22 +425,22 @@ func (s *Server) handleRegisterRequest(args [0]string, argsEscaped bool, w http.
 		}
 	}()
 
-	var response RegisterRes
+	var response RegisterUserRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
-			OperationName:    RegisterOperation,
+			OperationName:    RegisterUserOperation,
 			OperationSummary: "Register a new user",
-			OperationID:      "register",
+			OperationID:      "RegisterUser",
 			Body:             request,
 			Params:           middleware.Parameters{},
 			Raw:              r,
 		}
 
 		type (
-			Request  = OptRegisterReq
+			Request  = OptRegisterUserReq
 			Params   = struct{}
-			Response = RegisterRes
+			Response = RegisterUserRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -451,12 +451,12 @@ func (s *Server) handleRegisterRequest(args [0]string, argsEscaped bool, w http.
 			mreq,
 			nil,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.Register(ctx, request)
+				response, err = s.h.RegisterUser(ctx, request)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.Register(ctx, request)
+		response, err = s.h.RegisterUser(ctx, request)
 	}
 	if err != nil {
 		defer recordError("Internal", err)
@@ -464,7 +464,7 @@ func (s *Server) handleRegisterRequest(args [0]string, argsEscaped bool, w http.
 		return
 	}
 
-	if err := encodeRegisterResponse(response, w, span); err != nil {
+	if err := encodeRegisterUserResponse(response, w, span); err != nil {
 		defer recordError("EncodeResponse", err)
 		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
 			s.cfg.ErrorHandler(ctx, w, r, err)
