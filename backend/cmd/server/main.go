@@ -33,7 +33,7 @@ func (s *SecurityHandler) HandleBearerAuth(ctx context.Context, operationName op
 
 func main() {
     // データベース接続
-    dsn := "postgres://user:password@db:5432/testdb?sslmode=disable"
+    dsn := "postgres://user:password@db:5432/iizukaeats_db?sslmode=disable"
     dbpool, err := pgxpool.New(context.Background(), dsn)
     if err != nil {
         log.Fatalf("DB接続失敗: %v", err)
