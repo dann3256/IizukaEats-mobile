@@ -1,4 +1,4 @@
-version: '3.8'
+
 
 services:
   # Goアプリケーションのサービス
@@ -12,8 +12,9 @@ services:
       # dbという名前のホストで動いているPostgreSQLサーバーの5432番ポートに接続し、userというユーザー名とpasswordというパスワードを使ってiizukaeats_dbデータベースに、暗号化なしでログインしてください
       - DB_SOURCE=postgresql://user:password@db:5432/iizukaeats_db?sslmode=disable
     depends_on:
-      - db # dbサービスが起動してからbackendサービスを起動する
-
+      db:
+        # dbサービスのhealthcheckが成功(healthy)するまで待機する
+        condition: service_healthy
   # データベースのサービス (PostgreSQLを例)
   db:
     image: postgres:15-alpine # PostgreSQLの公式イメージを使用
@@ -25,6 +26,13 @@ services:
       - "5432:5432" # ホストから直接DBに接続したい場合（開発時に便利）
     volumes:
       - db-data:/var/lib/postgresql/data # DBのデータを永続化するためのボリューム
+  # 定期的な健康診断を設定
+    healthcheck:
+      # 診断コマンド: DBが接続を受け付けられるかチェック
+      test: ["CMD-SHELL", "pg_isready -U user -d iizukaeats_db"]
+      interval: 5s      # 診断の間隔
+      timeout: 5s       # タイムアウト
+      retries: 5        # 失敗と判断するまでの再試行回数
 
 volumes:
   db-data: # データの永続化に使用する名前付きボリュームを定義
