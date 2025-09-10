@@ -1,37 +1,62 @@
-
 services:
   # Goアプリケーションのサービス
   backend:
     build:
-      context: . # docker-compose.yaml があるディレクトリをビルドのコンテキストにする
-      dockerfile: Dockerfile # 使用するDockerfileを指定
+      # このファイルがあるコードを使う
+      context: ./backend
+      dockerfile: ../Dockerfile.dev  # 開発環境用のDockerfileを指定
+      # PCのポートとコンテナのポートをつなぐ
     ports:
-      - "8080:8080" # ホストの8080番ポートをコンテナの8080番ポートにマッピング
+      - "8080:8080"
+
+      # カレントディレクトリ（.）をコンテナの/appにマウント（変更があったらAirが認知して反映）（バインドマウント）
+    volumes:
+      - ./backend:/app
+
+ 
+
+# postgresql://...: これからPostgreSQL形式の住所を書く合図
+# user:password: データベースのコンテナに入るためのユーザー名とパスワード
+# @db:5432: データベースコンテナのポート番号。ここでのdbは、docker-compose.yaml内で定義したデータベースコンテナの名前
+# /iizukaeats_db: 接続したいデータベース
+# ?sslmode=disable: 暗号化通信（SSL）は使わないという設定
+# JWT_SECRET_KEY=your-super-secret-jwt-key
+#JWT（JSON Web Token）という認証技術で、デジタルの署名を作ったり検証したりするために使われる鍵
     environment:
-      # dbという名前のホストで動いているPostgreSQLサーバーの5432番ポートに接続し、userというユーザー名とpasswordというパスワードを使ってiizukaeats_dbデータベースに、暗号化なしでログインしてください
       - DB_SOURCE=postgresql://user:password@db:5432/iizukaeats_db?sslmode=disable
+      - JWT_SECRET_KEY=your-super-secret-jwt-key
+
+#データベースコンテナの自己診断機能（healthcheck）が「正常（healthy）」という結果を返すまでアプリの起動を開始しないように設定
+# これによりマイグレーションが完了するまでアプリが起動しないようにできる
     depends_on:
       db:
-        # dbサービスのhealthcheckが成功(healthy)するまで待機する
         condition: service_healthy
-  # データベースのサービス (PostgreSQLを例)
+  
+  # データベースのサービス
   db:
-    image: postgres:15-alpine # PostgreSQLの公式イメージを使用
+    image: postgres:15-alpine
     environment:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=iizukaeats_db
     ports:
-      - "5432:5432" # ホストから直接DBに接続したい場合（開発時に便利）
+      - "5432:5432"
+    # image: postgres:15-alpine で提供される公式のPostgreSQLコンテナは、デフォルトでデータを /var/lib/postgresql/data に保存するように設計されている
+    # それをdb-dataにマウントして永続化
     volumes:
-      - db-data:/var/lib/postgresql/data # DBのデータを永続化するためのボリューム
-  # 定期的な健康診断を設定
+      - db-data:/var/lib/postgresql/data
     healthcheck:
-      # 診断コマンド: DBが接続を受け付けられるかチェック
+      # pg_isreadyというコマンドを実行して、userという名前でiizukaeats_dbデータベースに接続できるかPostgreSQL自身に問い合わせます。
       test: ["CMD-SHELL", "pg_isready -U user -d iizukaeats_db"]
-      interval: 5s      # 診断の間隔
-      timeout: 5s       # タイムアウト
-      retries: 5        # 失敗と判断するまでの再試行回数
-
+      # 5秒ごとにチェック
+      interval: 5s
+      # チェックを開始してから5秒以内に応答がなければ、その回のチェックは「失敗」と見なす
+      timeout: 5s
+      # 20回連続で失敗したらコンテナは「不健康」と見なされる
+      retries: 20
+      # 起動後の最初の10秒間は、healthcheckの失敗を許容する猶予期間を設定
+      # これにより、DBの初期化に時間がかかってもエラーになりにくくなる
+      start_period: 10s
+# db-dataを永続化するためのボリュームを定義（名前付きボリューム）
 volumes:
-  db-data: # データの永続化に使用する名前付きボリュームを定義
+  db-data:

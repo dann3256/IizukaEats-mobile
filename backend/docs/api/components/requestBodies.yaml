@@ -1,6 +1,7 @@
 components:
   requestBodies:
     RegisterRequest:
+      required: true
       content:
         application/json:
           schema:
@@ -25,3 +26,4 @@ components:
                 $ref: "./schemas.yaml#/components/schemas/User/properties/email"
               password_hash:
                 $ref: "./schemas.yaml#/components/schemas/User/properties/password_hash"
+            

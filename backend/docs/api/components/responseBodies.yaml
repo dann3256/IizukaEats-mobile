@@ -21,9 +21,13 @@ components:
           schema:
             type: object
             properties:
+              id:
+                $ref: "./schemas.yaml#/components/schemas/User/properties/id"
               name:
                 $ref: "./schemas.yaml#/components/schemas/User/properties/name"
               email:
                 $ref: "./schemas.yaml#/components/schemas/User/properties/email"
-              password_hash:
-                $ref: "./schemas.yaml#/components/schemas/User/properties/password_hash"
+            required: 
+              - id
+              - name
+              - email

@@ -10,19 +10,19 @@ import (
 )
 
 const createUser = `-- name: CreateUser :one
-INSERT INTO users (email, password_hash, name)
+INSERT INTO users (name,email, password_hash)
 VALUES ($1, $2, $3)
 RETURNING id, name, email, password_hash, created_at, updated_at
 `
 
 type CreateUserParams struct {
+	Name         string
 	Email        string
 	PasswordHash string
-	Name         string
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
-	row := q.db.QueryRow(ctx, createUser, arg.Email, arg.PasswordHash, arg.Name)
+	row := q.db.QueryRow(ctx, createUser, arg.Name, arg.Email, arg.PasswordHash)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -45,36 +45,42 @@ func (q *Queries) DeleteUser(ctx context.Context, id int32) error {
 	return err
 }
 
-const getUser = `-- name: GetUser :many
+const getUserByEmail = `-- name: GetUserByEmail :one
 SELECT name, email, password_hash
 FROM users
-WHERE id = $1
+WHERE email = $1
 `
 
-type GetUserRow struct {
+type GetUserByEmailRow struct {
 	Name         string
 	Email        string
 	PasswordHash string
 }
 
-func (q *Queries) GetUser(ctx context.Context, id int32) ([]GetUserRow, error) {
-	rows, err := q.db.Query(ctx, getUser, id)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []GetUserRow
-	for rows.Next() {
-		var i GetUserRow
-		if err := rows.Scan(&i.Name, &i.Email, &i.PasswordHash); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
+func (q *Queries) GetUserByEmail(ctx context.Context, email string) (GetUserByEmailRow, error) {
+	row := q.db.QueryRow(ctx, getUserByEmail, email)
+	var i GetUserByEmailRow
+	err := row.Scan(&i.Name, &i.Email, &i.PasswordHash)
+	return i, err
+}
+
+const getUserByID = `-- name: GetUserByID :one
+SELECT name, email, password_hash
+FROM users
+WHERE id = $1
+`
+
+type GetUserByIDRow struct {
+	Name         string
+	Email        string
+	PasswordHash string
+}
+
+func (q *Queries) GetUserByID(ctx context.Context, id int32) (GetUserByIDRow, error) {
+	row := q.db.QueryRow(ctx, getUserByID, id)
+	var i GetUserByIDRow
+	err := row.Scan(&i.Name, &i.Email, &i.PasswordHash)
+	return i, err
 }
 
 const updateUser = `-- name: UpdateUser :exec

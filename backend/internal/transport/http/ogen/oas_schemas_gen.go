@@ -86,6 +86,8 @@ func (s *ForbiddenError) SetMessage(val OptString) {
 func (*ForbiddenError) getUserRes() {}
 func (*ForbiddenError) loginRes()   {}
 
+type ID int32
+
 // Ref: #/components/schemas/InternalServerError
 type InternalServerError struct {
 	Error   OptString `json:"error"`
@@ -367,52 +369,6 @@ func (o OptPasswordHash) Or(d PasswordHash) PasswordHash {
 	return d
 }
 
-// NewOptRegisterUserReq returns new OptRegisterUserReq with value set to v.
-func NewOptRegisterUserReq(v RegisterUserReq) OptRegisterUserReq {
-	return OptRegisterUserReq{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptRegisterUserReq is optional RegisterUserReq.
-type OptRegisterUserReq struct {
-	Value RegisterUserReq
-	Set   bool
-}
-
-// IsSet returns true if OptRegisterUserReq was set.
-func (o OptRegisterUserReq) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptRegisterUserReq) Reset() {
-	var v RegisterUserReq
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptRegisterUserReq) SetTo(v RegisterUserReq) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptRegisterUserReq) Get() (v RegisterUserReq, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptRegisterUserReq) Or(d RegisterUserReq) RegisterUserReq {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
 // NewOptString returns new OptString with value set to v.
 func NewOptString(v string) OptString {
 	return OptString{
@@ -527,39 +483,39 @@ func (*UnauthorizedError) getUserRes() {}
 func (*UnauthorizedError) loginRes()   {}
 
 type UserResponse struct {
-	Name         OptName         `json:"name"`
-	Email        OptEmail        `json:"email"`
-	PasswordHash OptPasswordHash `json:"password_hash"`
+	ID    ID    `json:"id"`
+	Name  Name  `json:"name"`
+	Email Email `json:"email"`
+}
+
+// GetID returns the value of ID.
+func (s *UserResponse) GetID() ID {
+	return s.ID
 }
 
 // GetName returns the value of Name.
-func (s *UserResponse) GetName() OptName {
+func (s *UserResponse) GetName() Name {
 	return s.Name
 }
 
 // GetEmail returns the value of Email.
-func (s *UserResponse) GetEmail() OptEmail {
+func (s *UserResponse) GetEmail() Email {
 	return s.Email
 }
 
-// GetPasswordHash returns the value of PasswordHash.
-func (s *UserResponse) GetPasswordHash() OptPasswordHash {
-	return s.PasswordHash
+// SetID sets the value of ID.
+func (s *UserResponse) SetID(val ID) {
+	s.ID = val
 }
 
 // SetName sets the value of Name.
-func (s *UserResponse) SetName(val OptName) {
+func (s *UserResponse) SetName(val Name) {
 	s.Name = val
 }
 
 // SetEmail sets the value of Email.
-func (s *UserResponse) SetEmail(val OptEmail) {
+func (s *UserResponse) SetEmail(val Email) {
 	s.Email = val
-}
-
-// SetPasswordHash sets the value of PasswordHash.
-func (s *UserResponse) SetPasswordHash(val OptPasswordHash) {
-	s.PasswordHash = val
 }
 
 func (*UserResponse) getUserRes()      {}

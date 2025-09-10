@@ -1,0 +1,25 @@
+
+# シングルステージ:
+# 開発環境ではGoのコンパイル環境が常に必要になるため、ステージを分ける必要がないため、シングルステージにする
+
+# ----------------- シングルステージ: 開発環境 -----------------
+FROM golang:1.25-alpine
+
+# ホットリロードツール「Air」をインストール
+# Airはファイルの変更を検知して、自動でビルドとサーバーの再起動を行ってくれるツール
+RUN go install github.com/air-verse/air@latest
+
+
+WORKDIR /app
+
+
+COPY backend/go.mod backend/go.sum ./
+RUN go mod download
+
+# アプリケーションのソースコードを全てコピーします。
+# (docker-compose.ymlのvolumes設定で後からマウントされますが、イメージ単体でも動くように含めておきます)
+COPY backend/ ./
+
+
+# `./server`を直接実行する代わりに、Airがソースコードを監視し、変更があるたびに`./server`をビルド＆再起動
+CMD ["air"]

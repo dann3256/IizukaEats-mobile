@@ -2,10 +2,10 @@ package handler
 
 import (
     "context"
-    "errors"
 
     "github.com/dann3256/IizukaEats-mobile/backend/internal/transport/http/ogen"
     "github.com/dann3256/IizukaEats-mobile/backend/internal/user/usecase"
+    
 )
 
 type APIHandler struct {
@@ -16,42 +16,49 @@ func NewAPIHandler(uc usecase.Usecase) openapi.Handler {
     return &APIHandler{uc: uc}
 }
 
-// RegisterUser は /register のリクエストを処理する
-func (h *APIHandler) RegisterUser(ctx context.Context, req openapi.OptRegisterUserReq) (openapi.RegisterUserRes, error) {
-    // リクエストが設定されているか確認
-    if !req.Set {
-        return nil, errors.New("request is not set")
-    }
-
+//  /register のリクエストを処理する
+func (h *APIHandler) RegisterUser(ctx context.Context, req *openapi.RegisterUserReq) (openapi.RegisterUserRes, error) {
     // Usecaseを呼び出す
-    createdUser, err := h.uc.RegisterUser(ctx, &req.Value)
+    domainUser, err := h.uc.RegisterUser(ctx, req)
     if err != nil {
         return nil, err
     }
 
-    // 成功レスポンスを組み立てる
-    return &openapi.UserResponse{
-        Name:         openapi.NewOptName(openapi.Name(createdUser.Name)),
-        Email:        openapi.NewOptEmail(openapi.Email(createdUser.Email)),
-        PasswordHash: openapi.NewOptPasswordHash(openapi.PasswordHash(createdUser.PasswordHash)),
-    }, nil
+     // domain.User -> openapi.User (レスポンス用) への変換
+   response := &openapi.UserResponse{
+    ID:    openapi.ID(domainUser.ID),
+    Name:  openapi.Name(domainUser.Name),
+    Email: openapi.Email(domainUser.Email),
+    // PasswordHash はレスポンスに含めるべきではない
 }
+
+    return response, nil
+}
+
+//  /login のリクエストを処理する
+func (h *APIHandler) Login(ctx context.Context, req openapi.OptLoginReq) (openapi.LoginRes, error) {
+    // リクエストが設定されているか確認
+    
+    // 必要に応じてデータを取得してレスポンスを構築
+    loginResponse, err := h.uc.Login(ctx, &req.Value)
+	if err != nil {
+		// Usecaseから返されたエラーを返す (例: 401 Unauthorized)
+		return nil,err
+	}
+
+	// 3. Usecaseからのレスポンスを返す
+	return &loginResponse, nil
+}
+
+
 
 // GetUser は /me のリクエストを処理する（未実装）
 func (h *APIHandler) GetUser(ctx context.Context) (openapi.GetUserRes, error) {
     // 必要に応じてデータを取得してレスポンスを構築
     return &openapi.UserResponse{
-        Name:         openapi.NewOptName("John Doe"),
-        Email:        openapi.NewOptEmail("john.doe@example.com"),
-        PasswordHash: openapi.NewOptPasswordHash("hashed_password"),
+        Name:         openapi.Name("John Doe"),
+        Email:        openapi.Email("john.doe@example.com"),
+        
     }, nil
 }
 
-// Login は /login のリクエストを処理する（未実装）
-func (h *APIHandler) Login(ctx context.Context, req openapi.OptLoginReq) (openapi.LoginRes, error) {
-    // 必要に応じてデータを取得してレスポンスを構築
-    return &openapi.LoginResponse{
-        AccessToken:  openapi.NewOptString("dummy_access_token"),
-		RefreshToken: openapi.NewOptString("dummy_refresh_token"),
-    }, nil
-}

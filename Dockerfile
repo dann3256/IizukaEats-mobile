@@ -1,41 +1,40 @@
-# ----------------- ステージ1: ビルド環境 -----------------
-# Goの公式イメージをビルド用のベースイメージとして使用
-FROM golang:1.23.0-alpine AS builder
+# ----------------- ステージ1: ビルド環境 (builder) -----------------
+# Goの環境とalpneのユーザーランドを組み合わせたイメージを使用
+# ビルド専用のステージ（一時的な作業場）として定義
+FROM golang:1.25-alpine AS builder
 
-# 作業ディレクトリを作成
-WORKDIR /go/src/github.com/dann3256/IizukaEats-mobile/backend
+# 作業ディレクトリをシンプルに設定
+WORKDIR /app
 
-# まず依存関係のファイルのみをコピーし、キャッシュを有効活用する
-COPY backend/go.mod  backend/go.sum ./
+# 依存関係のファイルのみをコピー
+COPY backend/go.mod backend/go.sum ./
 RUN go mod download
 
 # アプリケーションのソースコードを全てコピー
 COPY backend/ ./
-RUN go mod tidy
 
 # アプリケーションをビルド
-# CGO_ENABLED=0: C言語のライブラリに依存しない静的バイナリを生成
-# GOOS=linux: Linux環境向けの実行ファイルを生成
-# -o /server: ビルド成果物を /server という名前で出力
-RUN CGO_ENABLED=0 GOOS=linux go build -o /server ./cmd/server/main.go
+# GoプログラムからC言語のコードを呼び出すCGoを無効化し、Cライブラリに依存しないバイナリファイルを生成
+# Go言語のクロスコンパイル(今いるOS以外のOC向けのバイナリファイルを作れる)を有効化し、Linux OS向けのバイナリを生成
+# 成果物を現在の作業ディレクトリ(/app)に 'server' という名前で出力
+RUN CGO_ENABLED=0 GOOS=linux go build -o ./server ./backend/cmd/server/main.go
 
 
-# ----------------- ステージ2: 実行環境 -----------------
-# 軽量なAlpine Linuxを最終的な実行環境のベースイメージとして使用
+# ----------------- ステージ2: 実行環境 (final) -----------------
 FROM alpine:latest
 
 # 作業ディレクトリを作成
 WORKDIR /app
 
-# ビルドステージから生成された実行可能ファイルのみをコピー
-COPY --from=builder /server .
+# ビルドステージの作業ディレクトリから、生成された実行可能ファイルのみをコピー
+# コピー元とコピー先のパスが明確になる
+COPY --from=builder /app/server .
 
-# (オプション) データベースのマイグレーションファイルもコピーしておく
-# コンテナに入ってマイグレーションを実行したい場合に便利
+# マイグレーションファイルをコピー
 COPY backend/db/migrations ./db/migrations
 
-# コンテナがリッスンするポートを指定（Goアプリの実装に合わせて変更してください）
-EXPOSE 8080
-
 # コンテナ起動時に実行するコマンド
-CMD ["/app/server"]
+# WORKDIRが/appだから./server で実行できる
+CMD ["./server"]
+
+

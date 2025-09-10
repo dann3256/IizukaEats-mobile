@@ -23,6 +23,7 @@ paths:
       tags:
         - Authentication
       requestBody:
+          required: true
           $ref: "./components/requestBodies.yaml#/components/requestBodies/RegisterRequest"
         
       responses:

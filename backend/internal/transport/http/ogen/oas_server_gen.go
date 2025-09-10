@@ -25,7 +25,7 @@ type Handler interface {
 	// Create a new user account.
 	//
 	// POST /register
-	RegisterUser(ctx context.Context, req OptRegisterUserReq) (RegisterUserRes, error)
+	RegisterUser(ctx context.Context, req *RegisterUserReq) (RegisterUserRes, error)
 }
 
 // Server implements http server based on OpenAPI v3 specification and
