@@ -1,0 +1,53 @@
+# .air.toml
+
+# airのメイン設定セクション
+[core]
+# airが監視するプロジェクトのルートディレクトリを指定します。
+# Dockerコンテナ内のワーキングディレクトリを指すため "." で問題ありません。
+root = "."
+# コンパイル後のバイナリ（実行ファイル）の場所を指定します。
+# [build].cmd で指定した出力先と一致させる必要があります。
+bin = "tmp/main"
+# 監視対象のファイル拡張子。Goの他にテンプレートファイルなども含めると便利です。
+include_ext = ["go", "tpl", "tmpl", "html"]
+# 監視対象から除外するディレクトリ。
+# tmp を除外しないと、ビルド結果の生成を検知して無限にビルドがループするため必須です。
+exclude_dir = ["assets", "tmp", "vendor", "testdata"]
+# ログファイルに出力するプレフィックス
+log_name = "air_logs"
+# ファイル変更を検知してからビルドを開始するまでの遅延時間（ミリ秒）。
+# 短時間に連続してファイルを保存した際の、無駄なビルドを防ぎます。
+delay = 1000 # 1秒
+
+# ビルドに関する設定セクション
+[build]
+# Goアプリケーションをビルドするコマンド。
+# 「./backend/cmd/server」の部分をあなたのmain.goがあるディレクトリパスに正確に合わせてください。
+# これが最も重要な設定項目です。
+cmd = "go build -o ./tmp/main ./cmd/server"
+# ビルド後のバイナリを実行するコマンド。
+# ここで環境変数を設定することも可能です。
+full_bin = "tmp/main"
+# ビルド時のエラーログを保存するファイル
+log = "air_build.log"
+# ビルドに失敗した場合、古いバイナリの実行を停止します。
+stop_on_error = true
+
+# ログ出力に関する設定セクション
+[log]
+# ログに時間を表示します。
+time = true
+# ログのレベルを設定します（debug, info, warn, error）。
+level = "debug"
+
+# ログ出力の色の設定セクション
+[color]
+main = "magenta"
+watcher = "cyan"
+build = "yellow"
+runner = "green"
+
+# その他 miscellaneous の設定セクション
+[misc]
+# airを終了した際に、生成されたバイナリファイル（tmp/main）を削除します。
+clean_on_exit = true

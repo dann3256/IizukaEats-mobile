@@ -37,7 +37,14 @@ func (s *SecurityHandler) HandleBearerAuth(ctx context.Context, operationName op
 
 func main() {
     // データベース接続情報
-    dsn := "postgres://user:password@db:5432/iizukaeats_db?sslmode=disable"
+    //dsn := "postgres://user:password@db:5432/iizukaeats_db?sslmode=disable"
+
+    dsn := os.Getenv("DB_SOURCE")
+    if dsn == "" {
+        log.Fatal("DB_SOURCE environment variable not set")
+    }
+
+
 
     log.Println("データベースマイグレーションを開始します...")
     m, err := migrate.New(
@@ -85,6 +92,28 @@ func main() {
     // SecurityHandler を作成
     secHandler := &SecurityHandler{}
 
+
+
+     // CORSミドルウェアを作成
+    corsHandler := func(h http.Handler) http.Handler {
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+            // 許可するオリジンを指定します。開発中は "*" ですべて許可することもできます。
+            w.Header().Set("Access-Control-Allow-Origin", "http://localhost:42989") 
+            // プリフライトリクエストで許可するHTTPメソッド
+            w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+            // プリフライトリクエストで許可するHTTPヘッダー
+            w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+
+            // プリフライトリクエスト(OPTIONS)の場合は、ここで処理を終了
+            if r.Method == "OPTIONS" {
+                return
+            }
+            
+            h.ServeHTTP(w, r)
+        })
+    }
+
+
     // ogenサーバーを作成
     srv, err := openapi.NewServer(h, secHandler)
     if err != nil {
@@ -94,7 +123,7 @@ func main() {
     // HTTPサーバー起動
     port := 8080
     log.Printf("サーバー起動 http://localhost:%d", port)
-    if err := http.ListenAndServe(fmt.Sprintf(":%d", port), srv); err != nil {
+    if err := http.ListenAndServe(fmt.Sprintf(":%d", port),  corsHandler(srv)); err != nil {
         log.Fatalf("サーバー起動失敗: %v", err)
     }
 }

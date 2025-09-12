@@ -16,9 +16,14 @@ WORKDIR /app
 COPY backend/go.mod backend/go.sum ./
 RUN go mod download
 
+
 # アプリケーションのソースコードを全てコピーします。
-# (docker-compose.ymlのvolumes設定で後からマウントされますが、イメージ単体でも動くように含めておきます)
-COPY backend/ ./
+# (docker-compose.ymlのvolumes設定で後からマウントされますが、イメージ単体でも動くように含めておきます)# Dockerfile.dev の修正箇所
+
+# COPY .air.toml . を↓のように変更
+COPY backend/.air.toml .
+
+RUN go install github.com/air-verse/air@latest
 
 
 # `./server`を直接実行する代わりに、Airがソースコードを監視し、変更があるたびに`./server`をビルド＆再起動
