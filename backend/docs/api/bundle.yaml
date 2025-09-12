@@ -34,6 +34,7 @@ paths:
       tags:
         - Authentication
       requestBody:
+        required: true
         $ref: '#/components/requestBodies/LoginRequest'
       responses:
         '200':
@@ -140,7 +141,12 @@ components:
                 $ref: '#/components/schemas/email'
               password_hash:
                 $ref: '#/components/schemas/password_hash'
+            required:
+              - name
+              - email
+              - password_hash
     LoginRequest:
+      required: true
       content:
         application/json:
           schema:
@@ -152,6 +158,10 @@ components:
                 $ref: '#/components/schemas/email'
               password_hash:
                 $ref: '#/components/schemas/password_hash'
+            required:
+              - name
+              - email
+              - password_hash
   responses:
     UserResponse:
       content:
@@ -201,6 +211,9 @@ components:
                 type: string
                 description: アクセストークンの有効期限が切れた際に、新しいトークンを再発行するために使用するトークン。有効期限は長い。
                 example: def50200f29182f7ac2b76137d30b8f0a9a4b441...
+            required:
+              - accessToken
+              - refreshToken
     UnauthorizedError:
       description: Unauthorized. The request requires authentication, but the provided credentials (e.g., JWT) are missing, invalid, or expired.
       content:

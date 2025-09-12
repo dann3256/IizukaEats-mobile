@@ -19,7 +19,7 @@ type Handler interface {
 	// Authenticate user and return JWT token.
 	//
 	// POST /login
-	Login(ctx context.Context, req OptLoginReq) (LoginRes, error)
+	Login(ctx context.Context, req *LoginReq) (LoginRes, error)
 	// RegisterUser implements RegisterUser operation.
 	//
 	// Create a new user account.

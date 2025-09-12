@@ -119,255 +119,71 @@ func (*InternalServerError) loginRes()        {}
 func (*InternalServerError) registerUserRes() {}
 
 type LoginReq struct {
-	Name         OptName         `json:"name"`
-	Email        OptEmail        `json:"email"`
-	PasswordHash OptPasswordHash `json:"password_hash"`
+	Name         Name         `json:"name"`
+	Email        Email        `json:"email"`
+	PasswordHash PasswordHash `json:"password_hash"`
 }
 
 // GetName returns the value of Name.
-func (s *LoginReq) GetName() OptName {
+func (s *LoginReq) GetName() Name {
 	return s.Name
 }
 
 // GetEmail returns the value of Email.
-func (s *LoginReq) GetEmail() OptEmail {
+func (s *LoginReq) GetEmail() Email {
 	return s.Email
 }
 
 // GetPasswordHash returns the value of PasswordHash.
-func (s *LoginReq) GetPasswordHash() OptPasswordHash {
+func (s *LoginReq) GetPasswordHash() PasswordHash {
 	return s.PasswordHash
 }
 
 // SetName sets the value of Name.
-func (s *LoginReq) SetName(val OptName) {
+func (s *LoginReq) SetName(val Name) {
 	s.Name = val
 }
 
 // SetEmail sets the value of Email.
-func (s *LoginReq) SetEmail(val OptEmail) {
+func (s *LoginReq) SetEmail(val Email) {
 	s.Email = val
 }
 
 // SetPasswordHash sets the value of PasswordHash.
-func (s *LoginReq) SetPasswordHash(val OptPasswordHash) {
+func (s *LoginReq) SetPasswordHash(val PasswordHash) {
 	s.PasswordHash = val
 }
 
 type LoginResponse struct {
 	// APIリクエストの際に使用するJWTアクセストークン。有効期限は短い。.
-	AccessToken OptString `json:"accessToken"`
+	AccessToken string `json:"accessToken"`
 	// アクセストークンの有効期限が切れた際に、新しいトークンを再発行するために使用するトークン。有効期限は長い。.
-	RefreshToken OptString `json:"refreshToken"`
+	RefreshToken string `json:"refreshToken"`
 }
 
 // GetAccessToken returns the value of AccessToken.
-func (s *LoginResponse) GetAccessToken() OptString {
+func (s *LoginResponse) GetAccessToken() string {
 	return s.AccessToken
 }
 
 // GetRefreshToken returns the value of RefreshToken.
-func (s *LoginResponse) GetRefreshToken() OptString {
+func (s *LoginResponse) GetRefreshToken() string {
 	return s.RefreshToken
 }
 
 // SetAccessToken sets the value of AccessToken.
-func (s *LoginResponse) SetAccessToken(val OptString) {
+func (s *LoginResponse) SetAccessToken(val string) {
 	s.AccessToken = val
 }
 
 // SetRefreshToken sets the value of RefreshToken.
-func (s *LoginResponse) SetRefreshToken(val OptString) {
+func (s *LoginResponse) SetRefreshToken(val string) {
 	s.RefreshToken = val
 }
 
 func (*LoginResponse) loginRes() {}
 
 type Name string
-
-// NewOptEmail returns new OptEmail with value set to v.
-func NewOptEmail(v Email) OptEmail {
-	return OptEmail{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptEmail is optional Email.
-type OptEmail struct {
-	Value Email
-	Set   bool
-}
-
-// IsSet returns true if OptEmail was set.
-func (o OptEmail) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptEmail) Reset() {
-	var v Email
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptEmail) SetTo(v Email) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptEmail) Get() (v Email, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptEmail) Or(d Email) Email {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptLoginReq returns new OptLoginReq with value set to v.
-func NewOptLoginReq(v LoginReq) OptLoginReq {
-	return OptLoginReq{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptLoginReq is optional LoginReq.
-type OptLoginReq struct {
-	Value LoginReq
-	Set   bool
-}
-
-// IsSet returns true if OptLoginReq was set.
-func (o OptLoginReq) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptLoginReq) Reset() {
-	var v LoginReq
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptLoginReq) SetTo(v LoginReq) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptLoginReq) Get() (v LoginReq, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptLoginReq) Or(d LoginReq) LoginReq {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptName returns new OptName with value set to v.
-func NewOptName(v Name) OptName {
-	return OptName{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptName is optional Name.
-type OptName struct {
-	Value Name
-	Set   bool
-}
-
-// IsSet returns true if OptName was set.
-func (o OptName) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptName) Reset() {
-	var v Name
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptName) SetTo(v Name) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptName) Get() (v Name, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptName) Or(d Name) Name {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptPasswordHash returns new OptPasswordHash with value set to v.
-func NewOptPasswordHash(v PasswordHash) OptPasswordHash {
-	return OptPasswordHash{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptPasswordHash is optional PasswordHash.
-type OptPasswordHash struct {
-	Value PasswordHash
-	Set   bool
-}
-
-// IsSet returns true if OptPasswordHash was set.
-func (o OptPasswordHash) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptPasswordHash) Reset() {
-	var v PasswordHash
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptPasswordHash) SetTo(v PasswordHash) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptPasswordHash) Get() (v PasswordHash, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptPasswordHash) Or(d PasswordHash) PasswordHash {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
 
 // NewOptString returns new OptString with value set to v.
 func NewOptString(v string) OptString {
@@ -418,38 +234,38 @@ func (o OptString) Or(d string) string {
 type PasswordHash string
 
 type RegisterUserReq struct {
-	Name         OptName         `json:"name"`
-	Email        OptEmail        `json:"email"`
-	PasswordHash OptPasswordHash `json:"password_hash"`
+	Name         Name         `json:"name"`
+	Email        Email        `json:"email"`
+	PasswordHash PasswordHash `json:"password_hash"`
 }
 
 // GetName returns the value of Name.
-func (s *RegisterUserReq) GetName() OptName {
+func (s *RegisterUserReq) GetName() Name {
 	return s.Name
 }
 
 // GetEmail returns the value of Email.
-func (s *RegisterUserReq) GetEmail() OptEmail {
+func (s *RegisterUserReq) GetEmail() Email {
 	return s.Email
 }
 
 // GetPasswordHash returns the value of PasswordHash.
-func (s *RegisterUserReq) GetPasswordHash() OptPasswordHash {
+func (s *RegisterUserReq) GetPasswordHash() PasswordHash {
 	return s.PasswordHash
 }
 
 // SetName sets the value of Name.
-func (s *RegisterUserReq) SetName(val OptName) {
+func (s *RegisterUserReq) SetName(val Name) {
 	s.Name = val
 }
 
 // SetEmail sets the value of Email.
-func (s *RegisterUserReq) SetEmail(val OptEmail) {
+func (s *RegisterUserReq) SetEmail(val Email) {
 	s.Email = val
 }
 
 // SetPasswordHash sets the value of PasswordHash.
-func (s *RegisterUserReq) SetPasswordHash(val OptPasswordHash) {
+func (s *RegisterUserReq) SetPasswordHash(val PasswordHash) {
 	s.PasswordHash = val
 }
 

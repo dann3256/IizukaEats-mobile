@@ -14,6 +14,9 @@ components:
                 type: string
                 description: アクセストークンの有効期限が切れた際に、新しいトークンを再発行するために使用するトークン。有効期限は長い。
                 example: "def50200f29182f7ac2b76137d30b8f0a9a4b441..."
+            required:
+              - accessToken
+              - refreshToken
 
     UserResponse:
       content:

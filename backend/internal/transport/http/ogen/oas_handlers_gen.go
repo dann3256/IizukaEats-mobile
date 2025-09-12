@@ -300,7 +300,7 @@ func (s *Server) handleLoginRequest(args [0]string, argsEscaped bool, w http.Res
 		}
 
 		type (
-			Request  = OptLoginReq
+			Request  = *LoginReq
 			Params   = struct{}
 			Response = LoginRes
 		)

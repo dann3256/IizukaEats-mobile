@@ -46,12 +46,13 @@ func (q *Queries) DeleteUser(ctx context.Context, id int32) error {
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT name, email, password_hash
+SELECT id,name, email, password_hash
 FROM users
 WHERE email = $1
 `
 
 type GetUserByEmailRow struct {
+	ID           int32
 	Name         string
 	Email        string
 	PasswordHash string
@@ -60,7 +61,12 @@ type GetUserByEmailRow struct {
 func (q *Queries) GetUserByEmail(ctx context.Context, email string) (GetUserByEmailRow, error) {
 	row := q.db.QueryRow(ctx, getUserByEmail, email)
 	var i GetUserByEmailRow
-	err := row.Scan(&i.Name, &i.Email, &i.PasswordHash)
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Email,
+		&i.PasswordHash,
+	)
 	return i, err
 }
 

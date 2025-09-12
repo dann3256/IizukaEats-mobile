@@ -39,7 +39,7 @@ type Invoker interface {
 	// Authenticate user and return JWT token.
 	//
 	// POST /login
-	Login(ctx context.Context, request OptLoginReq) (LoginRes, error)
+	Login(ctx context.Context, request *LoginReq) (LoginRes, error)
 	// RegisterUser invokes RegisterUser operation.
 	//
 	// Create a new user account.
@@ -203,12 +203,12 @@ func (c *Client) sendGetUser(ctx context.Context) (res GetUserRes, err error) {
 // Authenticate user and return JWT token.
 //
 // POST /login
-func (c *Client) Login(ctx context.Context, request OptLoginReq) (LoginRes, error) {
+func (c *Client) Login(ctx context.Context, request *LoginReq) (LoginRes, error) {
 	res, err := c.sendLogin(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendLogin(ctx context.Context, request OptLoginReq) (res LoginRes, err error) {
+func (c *Client) sendLogin(ctx context.Context, request *LoginReq) (res LoginRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("login"),
 		semconv.HTTPRequestMethodKey.String("POST"),

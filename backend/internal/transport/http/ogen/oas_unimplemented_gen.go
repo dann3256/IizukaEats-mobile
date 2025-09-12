@@ -27,7 +27,7 @@ func (UnimplementedHandler) GetUser(ctx context.Context) (r GetUserRes, _ error)
 // Authenticate user and return JWT token.
 //
 // POST /login
-func (UnimplementedHandler) Login(ctx context.Context, req OptLoginReq) (r LoginRes, _ error) {
+func (UnimplementedHandler) Login(ctx context.Context, req *LoginReq) (r LoginRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

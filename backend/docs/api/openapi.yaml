@@ -44,7 +44,9 @@ paths:
       tags:
         - Authentication
       requestBody:
-        $ref: "./components/requestBodies.yaml#/components/requestBodies/LoginRequest"
+          required: true
+          $ref: "./components/requestBodies.yaml#/components/requestBodies/LoginRequest"
+
       responses:
         "200":
           $ref: "./components/responseBodies.yaml#/components/responses/LoginResponse"

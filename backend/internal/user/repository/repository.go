@@ -9,7 +9,7 @@ import (
 
 type Repository interface {
 	CreateUser(ctx context.Context, user *domain.User) ( *domain.User, error)
-	GetUserByEmail(ctx context.Context, email string) (sqlc.GetUserByEmailRow, error)
+	GetUserByEmail(ctx context.Context, email string) (*domain.User, error)
 }
 
 type repositoryImpl struct {
@@ -20,7 +20,8 @@ func NewRepository(q *sqlc.Queries) Repository {
 	return &repositoryImpl{q: q}
 }
 
-// CreateUser はsqlcのCreateUserを呼び出すだけ
+// ==================================================メソッド実装===============================================
+
 func (r *repositoryImpl) CreateUser(ctx context.Context, user *domain.User) (*domain.User, error) {
 	// domain.User -> sqlc.CreateUserParams への変換
     params := sqlc.CreateUserParams{
@@ -44,6 +45,16 @@ func (r *repositoryImpl) CreateUser(ctx context.Context, user *domain.User) (*do
 	
 }
 
-func (r *repositoryImpl) GetUserByEmail(ctx context.Context, email string) (sqlc.GetUserByEmailRow, error) {
-	return r.q.GetUserByEmail(ctx,email)
+func (r *repositoryImpl) GetUserByEmail(ctx context.Context, email string) (*domain.User, error) {
+	getbyemail, err := r.q.GetUserByEmail(ctx,email)
+    if err != nil {
+        return nil, err
+    }
+    // sqlc.GetUserByEmailRow -> domain.User への変換   
+    return &domain.User{
+        ID:           getbyemail.ID,
+        Name:         getbyemail.Name,
+        Email:        getbyemail.Email,
+        PasswordHash: getbyemail.PasswordHash,
+    }, nil
 }

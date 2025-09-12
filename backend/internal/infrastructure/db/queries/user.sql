@@ -2,8 +2,9 @@
 INSERT INTO users (name,email, password_hash)
 VALUES ($1, $2, $3)
 RETURNING *;
+
 -- name: GetUserByEmail :one
-SELECT name, email, password_hash
+SELECT id,name, email, password_hash
 FROM users
 WHERE email = $1;
 

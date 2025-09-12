@@ -31,15 +31,8 @@ func (s *LoginReq) Validate() error {
 
 	var failures []validate.FieldError
 	if err := func() error {
-		if value, ok := s.Email.Get(); ok {
-			if err := func() error {
-				if err := value.Validate(); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return err
-			}
+		if err := s.Email.Validate(); err != nil {
+			return err
 		}
 		return nil
 	}(); err != nil {
@@ -61,15 +54,8 @@ func (s *RegisterUserReq) Validate() error {
 
 	var failures []validate.FieldError
 	if err := func() error {
-		if value, ok := s.Email.Get(); ok {
-			if err := func() error {
-				if err := value.Validate(); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return err
-			}
+		if err := s.Email.Validate(); err != nil {
+			return err
 		}
 		return nil
 	}(); err != nil {
