@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/FrontEnd/E-ats-mobail" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/FrontEnd/E-ats-mobail/e_zuka_e_ats" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/FrontEnd/E-ats-mobail/flutter" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/IizukaEats-mobile" vcs="Git" />
+  </component>
+</project>
